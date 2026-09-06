@@ -1,0 +1,6 @@
+@GensanPOS.API_HostAddress = http://localhost:5170
+
+GET {{GensanPOS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

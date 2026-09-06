@@ -1,0 +1,30 @@
+[Unit]
+Description=GensanPOS API (ASP.NET)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/gensanpos/api
+EnvironmentFile=/etc/gensanpos/gensanpos.env
+ExecStart=/usr/bin/dotnet /var/www/gensanpos/api/GensanPOS.API.dll
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+# 1GB droplet: cap API memory (~400MB)
+MemoryMax=400M
+MemoryHigh=360M
+
+# Hardening (strict breaks some .NET runtime paths on Ubuntu)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/gensanpos/uploads /var/www/gensanpos/api /var/lib/gensanpos
+
+[Install]
+WantedBy=multi-user.target

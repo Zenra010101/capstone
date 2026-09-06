@@ -1,0 +1,30 @@
+[Unit]
+Description=GensanPOS Web (Next.js standalone)
+After=network.target gensanpos-api.service
+Wants=gensanpos-api.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/gensanpos/web
+EnvironmentFile=/etc/gensanpos/gensanpos.env
+ExecStart=/usr/bin/node /var/www/gensanpos/web/server.js
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+# 1GB droplet: cap Node memory (~350MB)
+MemoryMax=350M
+MemoryHigh=320M
+Environment=NODE_OPTIONS=--max-old-space-size=256
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/www/gensanpos/web
+
+[Install]
+WantedBy=multi-user.target

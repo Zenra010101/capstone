@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GensanPOS.API/GensanPOS.API.csproj" />
+  <Project Path="GensanPOS.Application/GensanPOS.Application.csproj" />
+  <Project Path="GensanPOS.Domain/GensanPOS.Domain.csproj" />
+  <Project Path="GensanPOS.Infrastructure/GensanPOS.Infrastructure.csproj" />
+</Solution>

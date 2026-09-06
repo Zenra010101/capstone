@@ -1,0 +1,111 @@
+using Microsoft.EntityFrameworkCore;
+
+namespace GensanPOS.Infrastructure.Persistence;
+
+public static class ExpenseSchemaMigrator
+{
+    public static async Task ApplyAsync(AppDbContext context, CancellationToken cancellationToken = default)
+    {
+        var conn = context.Database.GetDbConnection();
+        await conn.OpenAsync(cancellationToken);
+
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = """
+                CREATE TABLE IF NOT EXISTS ExpenseCategories (
+                    Id TEXT NOT NULL PRIMARY KEY,
+                    CreatedAt TEXT NOT NULL,
+                    UpdatedAt TEXT NULL,
+                    Name TEXT NOT NULL,
+                    Description TEXT NULL,
+                    IsActive INTEGER NOT NULL DEFAULT 1,
+                    CreatedByUserId TEXT NULL
+                );
+                """;
+            await cmd.ExecuteNonQueryAsync(cancellationToken);
+        }
+
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = """
+                CREATE TABLE IF NOT EXISTS ExpenseVouchers (
+                    Id TEXT NOT NULL PRIMARY KEY,
+                    CreatedAt TEXT NOT NULL,
+                    UpdatedAt TEXT NULL,
+                    VoucherNumber TEXT NOT NULL,
+                    ExpenseDate TEXT NOT NULL,
+                    CategoryId TEXT NOT NULL,
+                    Payee TEXT NOT NULL,
+                    Particulars TEXT NOT NULL,
+                    Amount REAL NOT NULL,
+                    PaymentMethod INTEGER NOT NULL DEFAULT 0,
+                    Bank TEXT NULL,
+                    ReferenceNumber TEXT NULL,
+                    Remarks TEXT NULL,
+                    Status INTEGER NOT NULL DEFAULT 0,
+                    CreatedByUserId TEXT NOT NULL,
+                    PaidByUserId TEXT NULL,
+                    PaidAt TEXT NULL,
+                    CancelledAt TEXT NULL
+                );
+                """;
+            await cmd.ExecuteNonQueryAsync(cancellationToken);
+        }
+
+        await EnsureColumnAsync(conn, "ExpenseVouchers", "PaidByUserId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ExpenseVouchers", "CreatedByUserId", "TEXT NOT NULL DEFAULT ''", cancellationToken);
+
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = """
+                UPDATE ExpenseVouchers
+                SET CreatedByUserId = PreparedByUserId
+                WHERE (CreatedByUserId IS NULL OR CreatedByUserId = '')
+                  AND EXISTS (
+                    SELECT 1 FROM pragma_table_info('ExpenseVouchers') WHERE name = 'PreparedByUserId'
+                  );
+                """;
+            try { await cmd.ExecuteNonQueryAsync(cancellationToken); } catch { /* column may not exist */ }
+        }
+
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = """
+                CREATE TABLE IF NOT EXISTS ExpenseVoucherAttachments (
+                    Id TEXT NOT NULL PRIMARY KEY,
+                    CreatedAt TEXT NOT NULL,
+                    UpdatedAt TEXT NULL,
+                    ExpenseVoucherId TEXT NOT NULL,
+                    FileName TEXT NOT NULL,
+                    StoredFileName TEXT NOT NULL,
+                    ContentType TEXT NOT NULL,
+                    FileSizeBytes INTEGER NOT NULL,
+                    Description TEXT NULL,
+                    UploadedByUserId TEXT NOT NULL
+                );
+                """;
+            await cmd.ExecuteNonQueryAsync(cancellationToken);
+        }
+
+        await EnsureColumnAsync(conn, "ExpenseVoucherAttachments", "FilePurgedAt", "TEXT NULL", cancellationToken);
+
+        await conn.CloseAsync();
+    }
+
+    private static async Task EnsureColumnAsync(
+        System.Data.Common.DbConnection conn,
+        string table,
+        string column,
+        string definition,
+        CancellationToken cancellationToken)
+    {
+        await using var check = conn.CreateCommand();
+        check.CommandText = $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = '{column}';";
+        var exists = Convert.ToInt32(await check.ExecuteScalarAsync(cancellationToken)) > 0;
+        if (exists) return;
+
+        await using var alter = conn.CreateCommand();
+        alter.CommandText = $"ALTER TABLE {table} ADD COLUMN {column} {definition};";
+        await alter.ExecuteNonQueryAsync(cancellationToken);
+    }
+}
