@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(LOCALAPPDATA)\GensanPOS\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(LOCALAPPDATA)\GensanPOS\bin\$(MSBuildProjectName)\</OutputPath>
+  </PropertyGroup>
+</Project>
