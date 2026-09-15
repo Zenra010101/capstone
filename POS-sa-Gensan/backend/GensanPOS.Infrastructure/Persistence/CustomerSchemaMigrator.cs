@@ -12,12 +12,12 @@ public static class CustomerSchemaMigrator
         await EnsureColumnAsync(conn, "Customers", "CustomerType", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "CreditLimit", "REAL NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "IsBlacklisted", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "Customers", "CreatedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Customers", "CustomerCode", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Customers", "CreatedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Customers", "CustomerCode", "VARCHAR NULL", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "EnableCredit", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "PaymentTerms", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "DueDays", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "Customers", "CustomPaymentTerms", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Customers", "CustomPaymentTerms", "VARCHAR NULL", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "AllowCheque", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "Customers", "IsBlocked", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
 

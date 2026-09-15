@@ -507,7 +507,7 @@ public class AppDbContext : DbContext
             e.HasIndex(x => new { x.RequestedByUserId, x.RequestedAt });
             e.Property(x => x.Title).HasMaxLength(200);
             e.Property(x => x.Reason).HasMaxLength(1000);
-            e.Property(x => x.PayloadJson).HasColumnType("TEXT");
+            e.Property(x => x.PayloadJson).HasColumnType("VARCHAR");
             e.Property(x => x.ApprovalNotes).HasMaxLength(1000);
             e.Property(x => x.RejectionReason).HasMaxLength(1000);
             e.Property(x => x.RequestedIpAddress).HasMaxLength(120);

@@ -10,12 +10,12 @@ public static class AdjustmentSchemaMigrator
         await conn.OpenAsync(cancellationToken);
 
         await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "AdjustmentType", "INTEGER NOT NULL DEFAULT 4", cancellationToken);
-        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "Notes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "ApprovalNotes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "CountingSessionId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "Notes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "ApprovalNotes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "InventoryAdjustmentRequests", "CountingSessionId", "VARCHAR NULL", cancellationToken);
 
         await EnsureAdjustmentLinesTableAsync(conn, cancellationToken);
-        await EnsureColumnAsync(conn, "InventoryTransactions", "ProductBatchId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "InventoryTransactions", "ProductBatchId", "VARCHAR NULL", cancellationToken);
         await EnsureIndexAsync(conn, "IX_InventoryTransactions_ProductBatchId", "InventoryTransactions", "ProductBatchId", cancellationToken);
 
         await conn.CloseAsync();
@@ -28,11 +28,11 @@ public static class AdjustmentSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS InventoryAdjustmentRequestLine (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                InventoryAdjustmentRequestId TEXT NOT NULL,
-                ProductBatchId TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                InventoryAdjustmentRequestId VARCHAR NOT NULL,
+                ProductBatchId VARCHAR NOT NULL,
                 SystemQuantity INTEGER NOT NULL DEFAULT 0,
                 ActualQuantity INTEGER NOT NULL DEFAULT 0,
                 Difference INTEGER NOT NULL DEFAULT 0,

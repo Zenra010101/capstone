@@ -9,15 +9,15 @@ public static class ChequeSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "SaleCheques", "BounceReason", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleCheques", "CustomerReceivableId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleCheques", "ClearedReceivablePaymentId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleCheques", "ReceivablePaymentId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleCheques", "ProcessedByUserId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleCheques", "BounceReason", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleCheques", "CustomerReceivableId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleCheques", "ClearedReceivablePaymentId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleCheques", "ReceivablePaymentId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleCheques", "ProcessedByUserId", "VARCHAR NULL", cancellationToken);
 
         await EnsureColumnAsync(conn, "ReceivablePayments", "IsChequePending", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "ReceivablePayments", "IsVoided", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "ReceivablePayments", "SaleChequeId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ReceivablePayments", "SaleChequeId", "VARCHAR NULL", cancellationToken);
 
         await EnsureBouncedChequeHistoryTableAsync(conn, cancellationToken);
 
@@ -31,23 +31,23 @@ public static class ChequeSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS BouncedChequeHistories (
-                Id TEXT NOT NULL PRIMARY KEY,
-                SaleChequeId TEXT NOT NULL,
-                ChequeNumber TEXT NOT NULL,
-                BankName TEXT NOT NULL,
-                Branch TEXT NULL,
-                CustomerName TEXT NOT NULL,
-                CustomerId TEXT NULL,
-                InvoiceNumber TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                SaleChequeId VARCHAR NOT NULL,
+                ChequeNumber VARCHAR NOT NULL,
+                BankName VARCHAR NOT NULL,
+                Branch VARCHAR NULL,
+                CustomerName VARCHAR NOT NULL,
+                CustomerId VARCHAR NULL,
+                InvoiceNumber VARCHAR NOT NULL,
                 Amount REAL NOT NULL,
-                MaturityDate TEXT NOT NULL,
-                BouncedDate TEXT NOT NULL,
-                Reason TEXT NOT NULL,
+                MaturityDate VARCHAR NOT NULL,
+                BouncedDate VARCHAR NOT NULL,
+                Reason VARCHAR NOT NULL,
                 PenaltyAmount REAL NOT NULL DEFAULT 0,
-                ProcessedByUserId TEXT NOT NULL,
-                CustomerReceivableId TEXT NULL,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL
+                ProcessedByUserId VARCHAR NOT NULL,
+                CustomerReceivableId VARCHAR NULL,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL
             );
             """;
         await cmd.ExecuteNonQueryAsync(cancellationToken);

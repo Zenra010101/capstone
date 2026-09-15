@@ -9,8 +9,8 @@ public static class PaymentSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "SalePayments", "BankBranch", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Sales", "SplitPaymentsJson", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SalePayments", "BankBranch", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Sales", "SplitPaymentsJson", "VARCHAR NULL", cancellationToken);
 
         await conn.CloseAsync();
     }
