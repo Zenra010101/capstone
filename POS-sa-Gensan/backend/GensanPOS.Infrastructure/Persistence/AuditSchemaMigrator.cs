@@ -1,0 +1,58 @@
+using Microsoft.EntityFrameworkCore;
+
+namespace GensanPOS.Infrastructure.Persistence;
+
+public static class AuditSchemaMigrator
+{
+    public static async Task ApplyAsync(AppDbContext context, CancellationToken cancellationToken = default)
+    {
+        var conn = context.Database.GetDbConnection();
+        await conn.OpenAsync(cancellationToken);
+
+        await EnsureColumnAsync(conn, "AuditLogs", "Category", "INTEGER NOT NULL DEFAULT 1", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "UserAgent", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "Status", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "OldValue", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "NewValue", "VARCHAR NULL", cancellationToken);
+
+        await using (var backfill = conn.CreateCommand())
+        {
+            backfill.CommandText = """
+                UPDATE AuditLogs SET Category = 0
+                WHERE Action IN ('LOGIN','LOGIN_SUCCESS','LOGIN_FAILED','LOGOUT','PASSWORD_CHANGE','ROLE_CHANGE','ACCOUNT_LOCK','ACCOUNT_UNLOCK');
+                """;
+            await backfill.ExecuteNonQueryAsync(cancellationToken);
+        }
+
+        await conn.CloseAsync();
+    }
+
+    private static async Task EnsureColumnAsync(
+        System.Data.Common.DbConnection conn,
+        string table,
+        string column,
+        string sqlType,
+        CancellationToken cancellationToken)
+    {
+        var exists = false;
+        await using (var info = conn.CreateCommand())
+        {
+            info.CommandText = $"PRAGMA table_info({table});";
+            await using var reader = await info.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                if (string.Equals(reader.GetString(1), column, StringComparison.OrdinalIgnoreCase))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+        }
+
+        if (exists) return;
+
+        await using var alter = conn.CreateCommand();
+        alter.CommandText = $"ALTER TABLE {table} ADD COLUMN {column} {sqlType};";
+        await alter.ExecuteNonQueryAsync(cancellationToken);
+    }
+}

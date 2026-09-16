@@ -1,0 +1,80 @@
+# Install: /etc/nginx/sites-available/gensanpos
+# Replace __DOMAIN__ before enabling.
+# certbot --nginx -d __DOMAIN__
+
+limit_req_zone $binary_remote_addr zone=gensanpos_api:10m rate=30r/s;
+limit_req_zone $binary_remote_addr zone=gensanpos_web:10m rate=60r/s;
+
+upstream gensanpos_api {
+    server 127.0.0.1:5170;
+    keepalive 8;
+}
+
+upstream gensanpos_web {
+    server 127.0.0.1:3000;
+    keepalive 8;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMAIN__;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name __DOMAIN__;
+
+    # certbot will inject ssl_certificate paths; placeholders for first nginx -t:
+    ssl_certificate     /etc/letsencrypt/live/__DOMAIN__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__DOMAIN__/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    client_max_body_size 25M;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # API (ASP.NET)
+    location /api/ {
+        limit_req zone=gensanpos_api burst=60 nodelay;
+        proxy_pass http://gensanpos_api/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        proxy_read_timeout 120s;
+    }
+
+    location /health {
+        proxy_pass http://gensanpos_api/health;
+        proxy_set_header Host $host;
+        access_log off;
+    }
+
+    # Next.js frontend
+    location / {
+        limit_req zone=gensanpos_web burst=120 nodelay;
+        proxy_pass http://gensanpos_web;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}

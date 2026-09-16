@@ -1,0 +1,8 @@
+# GensanPOS product catalog import template
+# Required columns: SKU, Name, Category, UnitPrice (selling price / SRP — map the client's right-side price column here)
+# Optional: Unit, CostPrice, Barcode, Grade, Size, Thickness, Length, Schedule, Diameter, Width, Height, MaterialType, Description, StockQuantity, ReorderLevel
+# Categories must match existing names or will be created on import (when createMissingCategories=true)
+SKU,Name,Category,Unit,UnitPrice,CostPrice,Barcode,Grade,Size,Thickness,Length,Description,StockQuantity
+SS-PIPE-2-SCH40-304,"Stainless Pipe 2"" SCH40",Stainless Pipes,pc,2850,2400,8902001001001,304,"2""",SCH40,6m,"Welded stainless pipe",0
+SS-SHT-4X8-1.0,"Stainless Sheet 4x8 ft 1.0mm",Stainless Sheets,sheet,4200,3600,8902002001001,304,4ft x 8ft,1.0mm,,2B finish sheet,0
+SS-HW-BOLT-M10,SS Hex Bolt M10x50,Accessories / Hardware,pc,18,11,8902007001002,A2-70,M10 x 50mm,,,Stainless hex bolt,0
