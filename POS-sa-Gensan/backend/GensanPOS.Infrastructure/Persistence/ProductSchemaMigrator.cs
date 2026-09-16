@@ -9,12 +9,12 @@ public static class ProductSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "Products", "Diameter", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Products", "Schedule", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Products", "Width", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Products", "Height", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Products", "MaterialType", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Products", "SupplierId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "Diameter", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "Schedule", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "Width", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "Height", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "MaterialType", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Products", "SupplierId", "VARCHAR NULL", cancellationToken);
 
         await conn.CloseAsync();
     }

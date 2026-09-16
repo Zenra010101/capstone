@@ -10,13 +10,13 @@ public static class SupplierSchemaMigrator
         await conn.OpenAsync(cancellationToken);
 
         await EnsureColumnAsync(conn, "Suppliers", "PaymentTerms", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "CustomPaymentTerms", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "Notes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "SupplierCode", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "DeliveryNotes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "SupplierRemarks", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "CustomPaymentTerms", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "Notes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "SupplierCode", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "DeliveryNotes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "SupplierRemarks", "VARCHAR NULL", cancellationToken);
         await EnsureColumnAsync(conn, "Suppliers", "Status", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "Suppliers", "CreatedByUserId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Suppliers", "CreatedByUserId", "VARCHAR NULL", cancellationToken);
 
         await BackfillSupplierCodesAsync(conn, cancellationToken);
 
@@ -66,14 +66,14 @@ public static class SupplierSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS SupplierContacts (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                SupplierId TEXT NOT NULL,
-                Name TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                SupplierId VARCHAR NOT NULL,
+                Name VARCHAR NOT NULL,
                 Role INTEGER NOT NULL DEFAULT 0,
-                Phone TEXT NULL,
-                Email TEXT NULL,
+                Phone VARCHAR NULL,
+                Email VARCHAR NULL,
                 IsPrimary INTEGER NOT NULL DEFAULT 0
             );
             """;
@@ -85,16 +85,16 @@ public static class SupplierSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS SupplierAttachments (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                SupplierId TEXT NOT NULL,
-                FileName TEXT NOT NULL,
-                StoredFileName TEXT NOT NULL,
-                ContentType TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                SupplierId VARCHAR NOT NULL,
+                FileName VARCHAR NOT NULL,
+                StoredFileName VARCHAR NOT NULL,
+                ContentType VARCHAR NOT NULL,
                 FileSizeBytes INTEGER NOT NULL,
-                Description TEXT NULL,
-                UploadedByUserId TEXT NOT NULL
+                Description VARCHAR NULL,
+                UploadedByUserId VARCHAR NOT NULL
             );
             """;
         await cmd.ExecuteNonQueryAsync(cancellationToken);

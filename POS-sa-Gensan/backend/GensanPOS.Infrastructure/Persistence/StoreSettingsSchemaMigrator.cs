@@ -9,7 +9,7 @@ public static class StoreSettingsSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
         await EnsureColumnAsync(conn, "StoreSettings", "AllowCashierBarcodePrinting", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "StoreSettings", "ReceiptPaperSize", "TEXT NOT NULL DEFAULT 'A5'", cancellationToken);
+        await EnsureColumnAsync(conn, "StoreSettings", "ReceiptPaperSize", "VARCHAR NOT NULL DEFAULT 'A5'", cancellationToken);
         await conn.CloseAsync();
     }
 

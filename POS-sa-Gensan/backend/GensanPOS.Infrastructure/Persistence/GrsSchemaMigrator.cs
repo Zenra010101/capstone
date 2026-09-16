@@ -11,35 +11,35 @@ public static class GrsSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "OriginalInvoiceNumber", "TEXT NOT NULL DEFAULT ''", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "CustomerName", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "OriginalSaleDate", "TEXT NOT NULL DEFAULT '1970-01-01'", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "OriginalInvoiceNumber", "VARCHAR NOT NULL DEFAULT ''", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "CustomerName", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "OriginalSaleDate", "VARCHAR NOT NULL DEFAULT '1970-01-01'", cancellationToken);
         await EnsureColumnAsync(conn, "GoodsReturnSlips", "RefundMethod", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "GoodsReturnSlips", "Status", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidedAt", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidReason", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidedAt", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "VoidReason", "VARCHAR NULL", cancellationToken);
 
         // Phase 1 exchange workflow (additive; WorkflowKind 0 = legacy)
         await EnsureColumnAsync(conn, "GoodsReturnSlips", "WorkflowKind", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "SubmittedAt", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "SubmittedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovedAt", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovalNotes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectedAt", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectionReason", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "StockRestoredAt", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlips", "GoodsExchangeId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "SubmittedAt", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "SubmittedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovedAt", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "ApprovalNotes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectedAt", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "RejectionReason", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "StockRestoredAt", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlips", "GoodsExchangeId", "VARCHAR NULL", cancellationToken);
 
         await EnsureColumnAsync(conn, "SaleItems", "PendingReturnQuantity", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
 
         await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "SellingPriceAtSale", "REAL NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "CostPriceAtSale", "REAL NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "ProductBatchId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "BatchCode", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "BatchReceivedDate", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "ProductBatchId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "BatchCode", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "BatchReceivedDate", "VARCHAR NULL", cancellationToken);
         await EnsureColumnAsync(conn, "GoodsReturnSlipItems", "Condition", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
 
         await EnsureSalesReturnDeductionsTableAsync(conn, cancellationToken);
@@ -101,17 +101,17 @@ public static class GrsSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS SalesReturnDeductions (
-                Id TEXT NOT NULL PRIMARY KEY,
-                GoodsReturnSlipId TEXT NOT NULL UNIQUE,
-                OriginalSaleId TEXT NOT NULL,
-                OriginalInvoiceNumber TEXT NOT NULL,
-                DeductionDate TEXT NOT NULL,
-                OriginalSaleDate TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                GoodsReturnSlipId VARCHAR NOT NULL UNIQUE,
+                OriginalSaleId VARCHAR NOT NULL,
+                OriginalInvoiceNumber VARCHAR NOT NULL,
+                DeductionDate VARCHAR NOT NULL,
+                OriginalSaleDate VARCHAR NOT NULL,
                 Amount REAL NOT NULL,
-                ProcessedByUserId TEXT NOT NULL,
+                ProcessedByUserId VARCHAR NOT NULL,
                 IsReversed INTEGER NOT NULL DEFAULT 0,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
                 FOREIGN KEY (GoodsReturnSlipId) REFERENCES GoodsReturnSlips(Id),
                 FOREIGN KEY (ProcessedByUserId) REFERENCES Users(Id)
             );
@@ -127,33 +127,33 @@ public static class GrsSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS GoodsExchanges (
-                Id TEXT NOT NULL PRIMARY KEY,
-                GoodsReturnSlipId TEXT NOT NULL UNIQUE,
-                ExchangeNumber TEXT NOT NULL UNIQUE,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                GoodsReturnSlipId VARCHAR NOT NULL UNIQUE,
+                ExchangeNumber VARCHAR NOT NULL UNIQUE,
                 ReturnCreditTotal REAL NOT NULL,
                 ReplacementTotal REAL NOT NULL,
                 AmountPaid REAL NOT NULL,
                 PaymentMethod INTEGER NULL,
-                TopUpSaleId TEXT NULL,
-                CompletedAt TEXT NOT NULL,
-                CompletedByUserId TEXT NOT NULL,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
+                TopUpSaleId VARCHAR NULL,
+                CompletedAt VARCHAR NOT NULL,
+                CompletedByUserId VARCHAR NOT NULL,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
                 FOREIGN KEY (GoodsReturnSlipId) REFERENCES GoodsReturnSlips(Id) ON DELETE CASCADE,
                 FOREIGN KEY (TopUpSaleId) REFERENCES Sales(Id),
                 FOREIGN KEY (CompletedByUserId) REFERENCES Users(Id)
             );
             CREATE TABLE IF NOT EXISTS GoodsExchangeLines (
-                Id TEXT NOT NULL PRIMARY KEY,
-                GoodsExchangeId TEXT NOT NULL,
-                ProductId TEXT NOT NULL,
-                ProductName TEXT NOT NULL,
-                ProductSku TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                GoodsExchangeId VARCHAR NOT NULL,
+                ProductId VARCHAR NOT NULL,
+                ProductName VARCHAR NOT NULL,
+                ProductSku VARCHAR NOT NULL,
                 Quantity INTEGER NOT NULL,
                 UnitPrice REAL NOT NULL,
                 LineTotal REAL NOT NULL,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
                 FOREIGN KEY (GoodsExchangeId) REFERENCES GoodsExchanges(Id) ON DELETE CASCADE,
                 FOREIGN KEY (ProductId) REFERENCES Products(Id)
             );

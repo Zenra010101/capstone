@@ -10,10 +10,10 @@ public static class AuditSchemaMigrator
         await conn.OpenAsync(cancellationToken);
 
         await EnsureColumnAsync(conn, "AuditLogs", "Category", "INTEGER NOT NULL DEFAULT 1", cancellationToken);
-        await EnsureColumnAsync(conn, "AuditLogs", "UserAgent", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "AuditLogs", "Status", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "AuditLogs", "OldValue", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "AuditLogs", "NewValue", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "UserAgent", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "Status", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "OldValue", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "AuditLogs", "NewValue", "VARCHAR NULL", cancellationToken);
 
         await using (var backfill = conn.CreateCommand())
         {

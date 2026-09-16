@@ -9,10 +9,10 @@ public static class CategorySchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "Categories", "Icon", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Categories", "ColorAccent", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Categories", "ParentCategoryId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "Categories", "CreatedByUserId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Categories", "Icon", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Categories", "ColorAccent", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Categories", "ParentCategoryId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "Categories", "CreatedByUserId", "VARCHAR NULL", cancellationToken);
 
         await conn.CloseAsync();
     }

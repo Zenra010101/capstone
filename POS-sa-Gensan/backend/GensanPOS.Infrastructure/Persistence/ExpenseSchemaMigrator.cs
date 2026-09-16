@@ -13,13 +13,13 @@ public static class ExpenseSchemaMigrator
         {
             cmd.CommandText = """
                 CREATE TABLE IF NOT EXISTS ExpenseCategories (
-                    Id TEXT NOT NULL PRIMARY KEY,
-                    CreatedAt TEXT NOT NULL,
-                    UpdatedAt TEXT NULL,
-                    Name TEXT NOT NULL,
-                    Description TEXT NULL,
+                    Id VARCHAR NOT NULL PRIMARY KEY,
+                    CreatedAt VARCHAR NOT NULL,
+                    UpdatedAt VARCHAR NULL,
+                    Name VARCHAR NOT NULL,
+                    Description VARCHAR NULL,
                     IsActive INTEGER NOT NULL DEFAULT 1,
-                    CreatedByUserId TEXT NULL
+                    CreatedByUserId VARCHAR NULL
                 );
                 """;
             await cmd.ExecuteNonQueryAsync(cancellationToken);
@@ -29,31 +29,31 @@ public static class ExpenseSchemaMigrator
         {
             cmd.CommandText = """
                 CREATE TABLE IF NOT EXISTS ExpenseVouchers (
-                    Id TEXT NOT NULL PRIMARY KEY,
-                    CreatedAt TEXT NOT NULL,
-                    UpdatedAt TEXT NULL,
-                    VoucherNumber TEXT NOT NULL,
-                    ExpenseDate TEXT NOT NULL,
-                    CategoryId TEXT NOT NULL,
-                    Payee TEXT NOT NULL,
-                    Particulars TEXT NOT NULL,
+                    Id VARCHAR NOT NULL PRIMARY KEY,
+                    CreatedAt VARCHAR NOT NULL,
+                    UpdatedAt VARCHAR NULL,
+                    VoucherNumber VARCHAR NOT NULL,
+                    ExpenseDate VARCHAR NOT NULL,
+                    CategoryId VARCHAR NOT NULL,
+                    Payee VARCHAR NOT NULL,
+                    Particulars VARCHAR NOT NULL,
                     Amount REAL NOT NULL,
                     PaymentMethod INTEGER NOT NULL DEFAULT 0,
-                    Bank TEXT NULL,
-                    ReferenceNumber TEXT NULL,
-                    Remarks TEXT NULL,
+                    Bank VARCHAR NULL,
+                    ReferenceNumber VARCHAR NULL,
+                    Remarks VARCHAR NULL,
                     Status INTEGER NOT NULL DEFAULT 0,
-                    CreatedByUserId TEXT NOT NULL,
-                    PaidByUserId TEXT NULL,
-                    PaidAt TEXT NULL,
-                    CancelledAt TEXT NULL
+                    CreatedByUserId VARCHAR NOT NULL,
+                    PaidByUserId VARCHAR NULL,
+                    PaidAt VARCHAR NULL,
+                    CancelledAt VARCHAR NULL
                 );
                 """;
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        await EnsureColumnAsync(conn, "ExpenseVouchers", "PaidByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "ExpenseVouchers", "CreatedByUserId", "TEXT NOT NULL DEFAULT ''", cancellationToken);
+        await EnsureColumnAsync(conn, "ExpenseVouchers", "PaidByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ExpenseVouchers", "CreatedByUserId", "VARCHAR NOT NULL DEFAULT ''", cancellationToken);
 
         await using (var cmd = conn.CreateCommand())
         {
@@ -72,22 +72,22 @@ public static class ExpenseSchemaMigrator
         {
             cmd.CommandText = """
                 CREATE TABLE IF NOT EXISTS ExpenseVoucherAttachments (
-                    Id TEXT NOT NULL PRIMARY KEY,
-                    CreatedAt TEXT NOT NULL,
-                    UpdatedAt TEXT NULL,
-                    ExpenseVoucherId TEXT NOT NULL,
-                    FileName TEXT NOT NULL,
-                    StoredFileName TEXT NOT NULL,
-                    ContentType TEXT NOT NULL,
+                    Id VARCHAR NOT NULL PRIMARY KEY,
+                    CreatedAt VARCHAR NOT NULL,
+                    UpdatedAt VARCHAR NULL,
+                    ExpenseVoucherId VARCHAR NOT NULL,
+                    FileName VARCHAR NOT NULL,
+                    StoredFileName VARCHAR NOT NULL,
+                    ContentType VARCHAR NOT NULL,
                     FileSizeBytes INTEGER NOT NULL,
-                    Description TEXT NULL,
-                    UploadedByUserId TEXT NOT NULL
+                    Description VARCHAR NULL,
+                    UploadedByUserId VARCHAR NOT NULL
                 );
                 """;
             await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        await EnsureColumnAsync(conn, "ExpenseVoucherAttachments", "FilePurgedAt", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ExpenseVoucherAttachments", "FilePurgedAt", "VARCHAR NULL", cancellationToken);
 
         await conn.CloseAsync();
     }

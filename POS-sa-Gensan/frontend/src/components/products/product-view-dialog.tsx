@@ -321,53 +321,97 @@ export function ProductViewDialog({
             </section>
 
             <section className="rounded-xl border border-border/80 bg-card p-3.5 shadow-sm">
-              <div className="mb-2.5 flex items-center justify-between border-b border-border/60 pb-2">
-                <h3 className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-                  <Building2 className="size-4 text-muted-foreground" />
-                  Availability in Other Branches
-                </h3>
-                <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground">
-                  Mock Data
-                </Badge>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-border/60 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                      <th className="py-2 px-2.5">Product Name</th>
-                      <th className="py-2 px-2.5">Branch</th>
-                      <th className="py-2 px-2.5 text-right">Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/40">
-                    {[
-                      { branch: "Branch 1", quantity: 45 },
-                      { branch: "Branch 2", quantity: 18 },
-                      { branch: "Branch 3", quantity: 0 },
-                      { branch: "Branch 4", quantity: 62 },
-                    ].map((item) => (
-                      <tr key={item.branch} className="hover:bg-muted/30">
-                        <td className="max-w-[140px] truncate py-2 px-2.5 font-medium text-foreground">
-                          {product.name}
-                        </td>
-                        <td className="py-2 px-2.5 text-muted-foreground">{item.branch}</td>
-                        <td className="py-2 px-2.5 text-right font-mono font-semibold">
-                          <span
-                            className={cn(
-                              item.quantity > 0
-                                ? "text-emerald-700 dark:text-emerald-400"
-                                : "text-destructive"
-                            )}
-                          >
-                            {item.quantity} {product.unitOfMeasure}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+  <div className="mb-2.5 flex items-center justify-between border-b border-border/60 pb-2">
+    <h3 className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+      <Building2 className="size-4 text-muted-foreground" />
+      Interbranch Price Comparison
+    </h3>
+
+    <Badge
+      variant="outline"
+      className="font-mono text-[10px] text-muted-foreground"
+    >
+      Mock Data
+    </Badge>
+  </div>
+
+  <p className="mb-3 text-[11px] leading-relaxed text-muted-foreground">
+    Comparison of old and new batch selling prices across branches.
+    This helps identify price increases between batches and branches.
+  </p>
+
+  <div className="overflow-x-auto">
+    <table className="w-full min-w-[520px] text-left text-xs">
+      <thead>
+        <tr className="border-b border-border/60 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          <th className="px-2.5 py-2">Branch</th>
+          <th className="px-2.5 py-2 text-right">Old Batch</th>
+          <th className="px-2.5 py-2 text-right">New Batch</th>
+          <th className="px-2.5 py-2 text-right">Difference</th>
+        </tr>
+      </thead>
+
+      <tbody className="divide-y divide-border/40">
+        {[
+          {
+            branch: "Branch 1",
+            oldPrice: 1000,
+            newPrice: 1100,
+          },
+          {
+            branch: "Branch 2",
+            oldPrice: 1050,
+            newPrice: 1150,
+          },
+          {
+            branch: "Branch 3",
+            oldPrice: 1000,
+            newPrice: 1200,
+          },
+          {
+            branch: "Branch 4",
+            oldPrice: 980,
+            newPrice: 1080,
+          },
+        ].map((item) => {
+          const difference = item.newPrice - item.oldPrice;
+
+          return (
+            <tr key={item.branch} className="hover:bg-muted/30">
+              <td className="px-2.5 py-2 font-medium text-foreground">
+                {item.branch}
+              </td>
+
+              <td className="px-2.5 py-2 text-right font-mono tabular-nums">
+                {formatCurrency(item.oldPrice)}
+              </td>
+
+              <td className="px-2.5 py-2 text-right font-mono font-semibold tabular-nums">
+                {formatCurrency(item.newPrice)}
+              </td>
+
+              <td className="px-2.5 py-2 text-right">
+                <span
+                  className={cn(
+                    "font-mono font-semibold tabular-nums",
+                    difference > 0
+                      ? "text-emerald-700 dark:text-emerald-400"
+                      : difference < 0
+                        ? "text-destructive"
+                        : "text-muted-foreground"
+                  )}
+                >
+                  {difference > 0 ? "+" : ""}
+                  {formatCurrency(difference)}
+                </span>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</section>
           </div>
 
           <div className="space-y-3 bg-muted/20 px-4 py-4 sm:px-5 lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">

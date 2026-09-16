@@ -409,7 +409,7 @@ export function ProductFormFields({
 
             <Field label="Category" required>
               <Select
-                value={form.categoryId || undefined}
+                value={form.categoryId || ""}
                 onValueChange={(v) => {
                   const nextId = v ?? "";
                   const nextName = findCategoryName(categories, nextId);

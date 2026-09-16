@@ -12,21 +12,21 @@ public static class SalesReportVerificationSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS SalesReportVerifications (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                ReportCode TEXT NOT NULL,
-                Preset TEXT NOT NULL,
-                PeriodLabel TEXT NOT NULL,
-                FromDate TEXT NOT NULL,
-                ToDate TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                ReportCode VARCHAR NOT NULL,
+                Preset VARCHAR NOT NULL,
+                PeriodLabel VARCHAR NOT NULL,
+                FromDate VARCHAR NOT NULL,
+                ToDate VARCHAR NOT NULL,
                 GrossSales REAL NOT NULL,
                 NetSales REAL NOT NULL,
                 TotalLineAmount REAL NOT NULL,
-                PrintedAtLabel TEXT NOT NULL,
-                PrintedAtUtc TEXT NOT NULL,
-                StoreName TEXT NULL,
-                GeneratedByUserId TEXT NULL
+                PrintedAtLabel VARCHAR NOT NULL,
+                PrintedAtUtc VARCHAR NOT NULL,
+                StoreName VARCHAR NULL,
+                GeneratedByUserId VARCHAR NULL
             );
             CREATE UNIQUE INDEX IF NOT EXISTS IX_SalesReportVerifications_ReportCode
                 ON SalesReportVerifications (ReportCode);

@@ -9,14 +9,14 @@ public static class ReceivingSchemaMigrator
         var conn = context.Database.GetDbConnection();
         await conn.OpenAsync(cancellationToken);
 
-        await EnsureColumnAsync(conn, "StockReceivings", "DeliveryReceiptNumber", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "StockReceivings", "ApprovalNotes", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "StockReceivings", "PurchaseOrderId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "StockReceivings", "DeliveryReceiptNumber", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "StockReceivings", "ApprovalNotes", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "StockReceivings", "PurchaseOrderId", "VARCHAR NULL", cancellationToken);
         await EnsureColumnAsync(conn, "StockReceivingItems", "ExpectedQuantity", "INTEGER NULL", cancellationToken);
         await EnsureColumnAsync(conn, "StockReceivingItems", "CostPrice", "REAL NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(conn, "StockReceivingItems", "SellingPrice", "REAL NOT NULL DEFAULT 0", cancellationToken);
         await BackfillSellingPriceAsync(conn, cancellationToken);
-        await EnsureColumnAsync(conn, "StockReceivingItems", "Remarks", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "StockReceivingItems", "Remarks", "VARCHAR NULL", cancellationToken);
 
         await EnsureTableAsync(conn, cancellationToken);
 
@@ -43,16 +43,16 @@ public static class ReceivingSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS StockReceivingAttachments (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                StockReceivingId TEXT NOT NULL,
-                FileName TEXT NOT NULL,
-                StoredFileName TEXT NOT NULL,
-                ContentType TEXT NOT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                StockReceivingId VARCHAR NOT NULL,
+                FileName VARCHAR NOT NULL,
+                StoredFileName VARCHAR NOT NULL,
+                ContentType VARCHAR NOT NULL,
                 FileSizeBytes INTEGER NOT NULL,
-                Description TEXT NULL,
-                UploadedByUserId TEXT NOT NULL
+                Description VARCHAR NULL,
+                UploadedByUserId VARCHAR NOT NULL
             );
             """;
         await cmd.ExecuteNonQueryAsync(cancellationToken);

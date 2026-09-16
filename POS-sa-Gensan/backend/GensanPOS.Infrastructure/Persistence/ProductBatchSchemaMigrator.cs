@@ -11,16 +11,16 @@ public static class ProductBatchSchemaMigrator
 
         await EnsureTableAsync(conn, cancellationToken);
         await EnsureColumnAsync(conn, "ProductBatches", "ReceivedQuantity", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
-        await EnsureColumnAsync(conn, "ProductBatches", "StockReceivingItemId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "ProductBatches", "SupplierId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "ProductBatches", "ReceivedByUserId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "ProductBatches", "ApprovedByUserId", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ProductBatches", "StockReceivingItemId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ProductBatches", "SupplierId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ProductBatches", "ReceivedByUserId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "ProductBatches", "ApprovedByUserId", "VARCHAR NULL", cancellationToken);
         await BackfillReceivedQuantityAsync(conn, cancellationToken);
         await EnsureUniqueIndexAsync(
             conn, "IX_ProductBatches_StockReceivingItemId", "ProductBatches", "StockReceivingItemId", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleItems", "ProductBatchId", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleItems", "BatchCodeAtSale", "TEXT NULL", cancellationToken);
-        await EnsureColumnAsync(conn, "SaleItems", "BatchReceivedDate", "TEXT NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleItems", "ProductBatchId", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleItems", "BatchCodeAtSale", "VARCHAR NULL", cancellationToken);
+        await EnsureColumnAsync(conn, "SaleItems", "BatchReceivedDate", "VARCHAR NULL", cancellationToken);
         await BackfillSaleItemBatchSnapshotsAsync(conn, cancellationToken);
         await EnsureSaleItemsBatchIndexAsync(conn, cancellationToken);
 
@@ -32,18 +32,18 @@ public static class ProductBatchSchemaMigrator
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS ProductBatches (
-                Id TEXT NOT NULL PRIMARY KEY,
-                CreatedAt TEXT NOT NULL,
-                UpdatedAt TEXT NULL,
-                ProductId TEXT NOT NULL,
-                BatchCode TEXT NULL,
+                Id VARCHAR NOT NULL PRIMARY KEY,
+                CreatedAt VARCHAR NOT NULL,
+                UpdatedAt VARCHAR NULL,
+                ProductId VARCHAR NOT NULL,
+                BatchCode VARCHAR NULL,
                 CostPrice REAL NOT NULL DEFAULT 0,
                 SellingPrice REAL NOT NULL DEFAULT 0,
                 ReceivedQuantity INTEGER NOT NULL DEFAULT 0,
                 Quantity INTEGER NOT NULL DEFAULT 0,
-                ReceivedDate TEXT NOT NULL,
+                ReceivedDate VARCHAR NOT NULL,
                 IsActive INTEGER NOT NULL DEFAULT 1,
-                StockReceivingId TEXT NULL
+                StockReceivingId VARCHAR NULL
             );
             CREATE INDEX IF NOT EXISTS IX_ProductBatches_ProductId ON ProductBatches (ProductId);
             CREATE INDEX IF NOT EXISTS IX_ProductBatches_ProductId_ReceivedDate_CreatedAt

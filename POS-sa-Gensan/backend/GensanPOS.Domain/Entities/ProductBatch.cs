@@ -14,6 +14,10 @@ public class ProductBatch : BaseEntity
 
     public Product Product { get; set; } = null!;
 
+    // Branch assignment
+    public Guid? BranchId { get; set; }
+    public Branch? Branch { get; set; }
+
     public string? BatchCode { get; set; }
 
     public decimal CostPrice { get; set; }

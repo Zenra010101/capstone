@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<Branch> Branches => Set<Branch>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ProductBatch> ProductBatches => Set<ProductBatch>();
@@ -45,6 +46,16 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Branch>(e =>
+        {
+            e.HasIndex(x => x.Code).IsUnique();
+            e.HasIndex(x => x.IsActive);
+
+            e.Property(x => x.Name).HasMaxLength(200);
+            e.Property(x => x.Code).HasMaxLength(30);
+            e.Property(x => x.Address).HasMaxLength(500);
+        });
+
         modelBuilder.Entity<Role>(e =>
         {
             e.HasIndex(x => x.Name).IsUnique();
@@ -57,6 +68,11 @@ public class AppDbContext : DbContext
             e.Property(x => x.Email).HasMaxLength(256);
             e.Property(x => x.FullName).HasMaxLength(200);
             e.HasOne(x => x.Role).WithMany(r => r.Users).HasForeignKey(x => x.RoleId);
+            
+            e.HasOne(x => x.Branch)
+                .WithMany(b => b.Users)
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Category>(e =>
@@ -111,6 +127,10 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Supplier).WithMany().HasForeignKey(x => x.SupplierId).IsRequired(false);
             e.HasOne(x => x.ReceivedByUser).WithMany().HasForeignKey(x => x.ReceivedByUserId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.ApprovedByUser).WithMany().HasForeignKey(x => x.ApprovedByUserId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.Branch)
+                .WithMany(b => b.ProductBatches)
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Sale>(e =>
@@ -139,6 +159,10 @@ public class AppDbContext : DbContext
             e.Property(x => x.AmountPaid).HasPrecision(18, 2);
             e.Property(x => x.ChangeAmount).HasPrecision(18, 2);
             e.HasOne(x => x.User).WithMany(u => u.Sales).HasForeignKey(x => x.UserId);
+            e.HasOne(x => x.Branch)
+                .WithMany(b => b.Sales)
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
             e.HasOne(x => x.Payment).WithOne(p => p.Sale).HasForeignKey<SalePayment>(p => p.SaleId);
             e.HasOne(x => x.VoidedByUser).WithMany().HasForeignKey(x => x.VoidedByUserId).OnDelete(DeleteBehavior.SetNull);
             e.HasOne(x => x.ReplacesSale).WithMany().HasForeignKey(x => x.ReplacesSaleId).OnDelete(DeleteBehavior.SetNull);
@@ -400,6 +424,10 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Supplier).WithMany(s => s.StockReceivings).HasForeignKey(x => x.SupplierId);
             e.HasOne(x => x.RequestedByUser).WithMany().HasForeignKey(x => x.RequestedByUserId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.ReviewedByUser).WithMany().HasForeignKey(x => x.ReviewedByUserId).OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Branch)
+                .WithMany(b => b.StockReceivings)
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<StockReceivingItem>(e =>

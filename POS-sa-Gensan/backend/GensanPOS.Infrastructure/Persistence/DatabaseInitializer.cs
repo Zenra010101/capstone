@@ -79,6 +79,7 @@ public static class DatabaseInitializer
         await AuditSchemaMigrator.ApplyAsync(context);
         await ProductSchemaMigrator.ApplyAsync(context);
         await ProductBatchSchemaMigrator.ApplyAsync(context);
+        await BranchSchemaMigrator.ApplyAsync(context);
         await GrsSchemaMigrator.ApplyReturnBatchBackfillAsync(context);
         await CategorySchemaMigrator.ApplyAsync(context);
         await AdjustmentSchemaMigrator.ApplyAsync(context);

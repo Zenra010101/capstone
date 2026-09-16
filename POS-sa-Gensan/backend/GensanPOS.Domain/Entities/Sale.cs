@@ -7,6 +7,10 @@ public class Sale : BaseEntity
     public string SaleNumber { get; set; } = string.Empty;
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
+    // Branch assignment
+    public Guid? BranchId { get; set; }
+    public Branch? Branch { get; set; }
+    
     public decimal SubTotal { get; set; }
     public decimal DiscountPercent { get; set; }
     public decimal DiscountAmount { get; set; }
